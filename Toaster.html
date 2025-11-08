@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8" />
+   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+   <!-- Don't use this in production: -->
+   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+   <style>
+      .toaster {
+         position: fixed;
+         top: 0;
+         right: 0;
+         line-height: 40px;
+         width: 300px;
+         padding:5px;
+         color: white;
+         animation: toasterAnim 0.2s ease-in-out;
+      }
+
+      .toaster>div {
+         border: 4px solid blue;
+      }
+
+      @keyframes toasterAnim {
+         0% {
+            right: -300px;
+         }
+
+         25% {
+            right: -150px;
+         }
+
+         50% {
+            right: 0px;
+         }
+
+         75% {
+            right: 150px;
+         }
+
+         100% {
+            right: 0px;
+         }
+      }
+   </style>
+</head>
+
+<body>
+   <div id="root"></div>
+   <script type="text/babel">
+      const Toaster = ({ bgColor, message, setIsShowToaster }) => {
+         const [width, setWidth] = React.useState(0)
+         React.useEffect(() => {
+            const intervalId = setInterval(() => {
+               setWidth((val) => {
+                  if (val > 300) {
+                     setIsShowToaster(false);
+                     clearInterval(intervalId);
+                  }
+                  return val + 1
+               })
+            }, 35)
+         }, [])
+
+
+         return <div className="toaster" style={{ background: bgColor }}>
+            {message}
+            <div style={{ width }}></div>
+         </div>
+      }
+      const App = () => {
+         const [isShowToaster, setIsShowToaster] = React.useState(false)
+         const [color, setColor] = React.useState("")
+         const [message, setMessage] = React.useState("")
+         const fnShowToaster = (clr,msg) => {
+            setIsShowToaster(true)
+            setColor(clr)
+            setMessage(msg)
+         }
+         return <div>
+            <h3>To see the toaster, click on Show Toaster button, after 10sec going to  hide the toaster</h3>
+            <button onClick={()=>fnShowToaster("green", "Success...")}>Show Success MessageToaster</button>
+            <button onClick={()=>fnShowToaster("red", "Failure...")}>Show Error Message Toaster</button>
+            {isShowToaster && <Toaster bgColor={color} message={message} setIsShowToaster={setIsShowToaster} />}
+         </div>
+      }
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+
+   </script>
+   <!--
+         Note: this page is a great way to try React but it's not suitable for production.
+         It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+         Read this page for starting a new React project with JSX:
+         https://react.dev/learn/start-a-new-react-project
+
+         Read this page for adding React with JSX to an existing project:
+         https://react.dev/learn/add-react-to-an-existing-project
+         -->
+</body>
+
+</html>
